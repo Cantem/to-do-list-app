@@ -11,15 +11,19 @@ const STORAGE_KEY = "@todos";
 export default function App() {
   const initialData = {
     todos: {},
-    isDataReady: false,
   };
   const [data, setData] = useState(initialData);
+
+
+  useEffect(async () => {
+    retrieveData();
+  },[]);
 
   const retrieveData = async () => {
     try {
       const data = await AsyncStorage.getItem(STORAGE_KEY);
       const parsedData = JSON.parse(data);
-      setData({ isDataReady: true, todos: parsedData || {} });
+      setData({ todos: parsedData || {} });
     } catch (e) {
       alert("Failed to load data");
     }
@@ -28,10 +32,6 @@ export default function App() {
   const saveData = async (data) => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   };
-
-  useEffect(async () => {
-    retrieveData();
-  },[]);
 
   const addItem = (value) => {
     const newItem = value;
