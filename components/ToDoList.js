@@ -3,19 +3,29 @@ import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export default function TodoList({ item, deleteItem }) {
+export default function TodoList({ item, deleteItem, markAsDone }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.listContainer}>
-        <View style={styles.circleContainer}>
-          <Entypo name="circle" size={20} color="midnightblue" />
-        </View>
-        <View>
-          <Text style={styles.text}>{item.value}</Text>
-          <Text style={styles.textTask}> Task</Text>
-        </View>
-        <TouchableOpacity style={styles.iconContainer} onPress={() => deleteItem(item.key)}>
-          <MaterialIcons name="delete" size={24} color="midnightblue" />
+        <TouchableOpacity
+          style={styles.circleContainer}
+          onPress={() => markAsDone(item.key)}
+        >
+          <Entypo
+            name={item.isDone ? "check" : "circle"}
+            size={20}
+            color="midnightblue"
+          />
+          <View>
+            <Text style={styles.text}>{item.value}</Text>
+            <Text style={styles.textTask}>{item.date}</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconContainer}
+          onPress={() => deleteItem(item.key)}
+        >
+          <MaterialIcons name="delete" size={30} color="midnightblue" />
         </TouchableOpacity>
       </TouchableOpacity>
     </View>
@@ -39,17 +49,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   circleContainer: {
-    alignItems: "center",
     justifyContent: "center",
-    paddingLeft: 5
+    padding: 10,
   },
-  iconContainer : {
+  iconContainer: {
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
-    marginTop: 15,
     height: 40,
-    borderRadius: 10
+    borderRadius: 10,
   },
   text: {
     color: "black",
@@ -61,9 +69,8 @@ const styles = StyleSheet.create({
   },
   textTask: {
     color: "goldenrod",
-    fontSize: 15,
+    fontSize: 10,
     marginRight: 20,
     borderRadius: 10,
-    width: 40,
   },
 });

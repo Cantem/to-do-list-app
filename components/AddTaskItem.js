@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { KeyboardAvoidingView, StyleSheet, View, TextInput, TouchableOpacity, } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons'; 
 
-export default function AddTaskItem({ submitHandler }) {
+export default function AddTaskItem({ addItem }) {
     const [value, setValue] = useState("");
 
     const onChangeText = (text) => {
@@ -15,7 +15,7 @@ export default function AddTaskItem({ submitHandler }) {
         style={styles.container}
       >
         <TextInput style={styles.inputField} value={value} onChangeText={onChangeText} placeholder={'Write a task'} placeholderTextColor={'#fff'}/>
-        <TouchableOpacity onPress={() => setValue(submitHandler(value))}>
+        <TouchableOpacity onPress={() => setValue(addItem(value))}>
           <View style={styles.button}>
               <MaterialIcons name="keyboard-arrow-up" size={24} color="black" />
           </View>
