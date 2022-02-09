@@ -1,61 +1,109 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  SafeAreaView,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, FlatList, SafeAreaView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import _values from "lodash.values";
 import AddTaskItem from "./components/AddTaskItem";
 import TodoList from "./components/ToDoList";
 import Header from "./components/Header";
 
+const STORAGE_KEY = "@todos";
+
 export default function App() {
-  const [data, setData] = useState([]);
+  const initialData = {
+    todos: {},
+    isDataReady: false,
+  };
+  const [data, setData] = useState(initialData);
+
+  const retrieveData = async () => {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEY);
+      const parsedData = JSON.parse(data);
+      setData({ isDataReady: true, todos: parsedData || {} });
+    } catch (e) {
+      alert("Failed to load data");
+    }
+  };
+
+  const saveData = async (data) => {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  };
+
+  useEffect(async () => {
+    retrieveData();
+  },[]);
 
   const addItem = (value) => {
-    setData((prevTodo) => {
-      return [
-        {
-          value: value,
-          key: Math.random().toString(),
-          isDone: false,
-          date: new Date().toISOString().slice(0,10)
-        },
-        ...prevTodo,
-      ];
-    });
+    const newItem = value;
+
+    if (newItem !== "") {
+      setData((prevTodo) => {
+        const key = Math.random().toString();
+        const newTodoObject = {
+          [key]: {
+            key: key,
+            isDone: false,
+            value: newItem,
+            createdAt: new Date().toISOString().slice(0, 10),
+          },
+        };
+        const newState = {
+          ...prevTodo,
+          todos: {
+            ...prevTodo.todos,
+            ...newTodoObject,
+          },
+        };
+        saveData(newState.todos);
+        return { ...newState };
+      });
+    }
   };
 
   const deleteItem = (key) => {
     setData((prevTodo) => {
-      return prevTodo.filter((todo) => todo.key !== key);
+      const todos = prevTodo.todos;
+      delete todos[key];
+      const newState = {
+        ...prevTodo,
+        ...todos,
+      };
+      saveData(newState.todos);
+      return { ...newState };
     });
   };
 
   const markAsDone = (key) => {
     setData(prevTodo => {
-      let data = [...prevTodo];
-      let indexOfToDo = data.findIndex(item =>item.key === key);
-
-      data[indexOfToDo] = {
-        ...data[indexOfToDo],
-        isDone: !data[indexOfToDo].isDone
+      const newState = {
+        ...prevTodo,
+        todos: {
+          ...prevTodo.todos,
+          [key]: {
+            ...prevTodo.todos[key],
+            isDone: !prevTodo.todos[key].isDone
+          }
+        }
       };
-
-      return data;
+      saveData(newState.todos);
+      return { ...newState };
     })
-  }
+  };
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.scrollView}>
         <View>
           <FlatList
-            data={data}
+            data={_values(data.todos)}
             ListHeaderComponent={() => <Header />}
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
-              <TodoList item={item} deleteItem={deleteItem} markAsDone={markAsDone} />
+              <TodoList
+                item={item}
+                deleteItem={deleteItem}
+                markAsDone={markAsDone}
+              />
             )}
           />
         </View>

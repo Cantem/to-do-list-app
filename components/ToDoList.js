@@ -18,7 +18,7 @@ export default function TodoList({ item, deleteItem, markAsDone }) {
           />
           <View>
             <Text style={styles.text}>{item.value}</Text>
-            <Text style={styles.textTask}>{item.date}</Text>
+            <Text style={styles.textTask}>{item.createdAt}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
