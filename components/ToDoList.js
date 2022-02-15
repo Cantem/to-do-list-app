@@ -16,11 +16,11 @@ export default function TodoList({ item, deleteItem, markAsDone }) {
             size={20}
             color="midnightblue"
           />
+        </TouchableOpacity>
           <View>
             <Text style={styles.text}>{item.value}</Text>
             <Text style={styles.textTask}>{item.createdAt}</Text>
           </View>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.iconContainer}
           onPress={() => deleteItem(item.key)}
@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
     backgroundColor: "whitesmoke",
     height: "auto",
     width: 350,
-    marginBottom: 30,
+    margin: 30,
+    // marginBottom: 30,
     borderRadius: 10,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
-    height: 40,
+    // height: 40,
     borderRadius: 10,
   },
   text: {
@@ -66,11 +67,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 10,
     marginRight: 20,
+    paddingTop: 10,
+    paddingBottom: 10
   },
   textTask: {
     color: "goldenrod",
     fontSize: 10,
     marginRight: 20,
     borderRadius: 10,
+    paddingBottom: 10
   },
 });
