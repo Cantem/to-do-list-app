@@ -14,10 +14,9 @@ export default function App() {
   };
   const [data, setData] = useState(initialData);
 
-
   useEffect(async () => {
     retrieveData();
-  },[]);
+  }, []);
 
   const retrieveData = async () => {
     try {
@@ -74,20 +73,20 @@ export default function App() {
   };
 
   const markAsDone = (key) => {
-    setData(prevTodo => {
+    setData((prevTodo) => {
       const newState = {
         ...prevTodo,
         todos: {
           ...prevTodo.todos,
           [key]: {
             ...prevTodo.todos[key],
-            isDone: !prevTodo.todos[key].isDone
-          }
-        }
+            isDone: !prevTodo.todos[key].isDone,
+          },
+        },
       };
       saveData(newState.todos);
       return { ...newState };
-    })
+    });
   };
 
   return (
